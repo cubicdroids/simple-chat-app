@@ -1,28 +1,37 @@
+<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Application</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Socket.io Chat App</title>
 </head>
 <body>
-  <div class="chat-app">
-    <div class="chat-sidebar">
-      <!-- Sidebar content goes here -->
-    </div>
-    <div class="chat-main">
-      <div class="chat-header">
-        <!-- Header content goes here -->
-      </div>
-      <div class="chat-messages">
-        <!-- Chat messages go here -->
-      </div>
-      <div class="chat-input">
-        <input type="text" placeholder="Type a message...">
-        <button>Send</button>
-      </div>
-    </div>
-  </div>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="input" autocomplete="off" /><button>Send</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(function () {
+      var socket = io();
+      var form = $('#form');
+      var input = $('#input');
+      var messages = $('#messages');
+
+      form.submit(function(e) {
+        e.preventDefault();
+        if (input.val()) {
+          socket.emit('chat message', input.val());
+          input.val('');
+        }
+      });
+
+      socket.on('chat message', function(msg){
+        messages.append($('<li>').text(msg));
+      });
+    });
+  </script>
 </body>
 </html>
